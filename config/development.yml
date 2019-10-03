@@ -1,0 +1,3 @@
+consumer:
+  host: localhost
+  message_queue: video_chunk

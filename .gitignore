@@ -1,0 +1,6 @@
+big_fiubrother_sampler/**/__pycache__
+big-fiubrother-sampler-venv/
+big_fiubrother_sampler.egg-info/
+dist/
+build/
+tmp/
