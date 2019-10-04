@@ -3,8 +3,8 @@ from big_fiubrother_core.message_clients.rabbitmq import Consumer
 
 class VideoChunkConsumer:
 
-    def __init__(self, settings, output_queue):
-        self.consumer = Consumer(settings['host'], settings['queue'], self._consumer_callback)
+    def __init__(self, configuration, output_queue):
+        self.consumer = Consumer(configuration, self._consumer_callback)
         self.output_queue = output_queue
  
     def start(self):

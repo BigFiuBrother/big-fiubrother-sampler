@@ -5,6 +5,7 @@ from big_fiubrother_core import StoppableThread
 class SamplingThread(StoppableThread):
 
     def __init__(self, queue):
+        super().__init__()
         self.queue = queue
 
     def _execute(self):

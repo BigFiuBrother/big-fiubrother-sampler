@@ -1,3 +1,5 @@
 consumer:
   host: localhost
-  message_queue: video_chunk
+  queue: video_chunks
+  username: fiubrother
+  password: alwayswatching
