@@ -1,4 +1,5 @@
 from big_fiubrother_core.messages import VideoChunkMessage
+from big_fiubrother_core.messages import decode_message
 from big_fiubrother_core import StoppableThread
 
 

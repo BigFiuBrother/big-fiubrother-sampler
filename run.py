@@ -7,9 +7,9 @@ from big_fiubrother_sampler import VideoChunkConsumer, SamplingThread
 
 
 if __name__ == "__main__":
-    print('[*] Configuring big-fiubrother-sampler')
-
     configuration = setup('Big Fiubrother Sampler Application')
+
+    print('[*] Configuring big-fiubrother-sampler')
 
     queue = Queue()
     sampling_thread = SamplingThread(queue)
