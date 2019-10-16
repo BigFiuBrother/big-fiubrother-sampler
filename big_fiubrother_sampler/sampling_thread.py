@@ -1,24 +1,42 @@
-from big_fiubrother_core.messages import VideoChunkMessage
-from big_fiubrother_core.messages import decode_message
 from big_fiubrother_core import StoppableThread
+from big_fiubrother_core.messages import SampledFrameMessage
+from big_fiubrother_core.image_processing_helper import image_to_bytes
+from cv2 import VideoCapture
 
 
 class SamplingThread(StoppableThread):
 
-    def __init__(self, queue):
+    def __init__(self, configuration, input_queue, output_queue):
         super().__init__()
-        self.queue = queue
+        self.input_queue = input_queue
+        self.output_queue = output_queue
+        self.sampling_rate = configuration['rate']
 
     def _execute(self):
-        message = self.queue.get()
+        message = self.input_queue.get()
 
         if message is not None:
-            video_chunk_message = decode_message(message)
-            filepath = 'tmp/{}_{}.mp4'.format(video_chunk_message.camera_id, video_chunk_message.timestamp)
-            
-            with open(filepath, 'wb') as file:
-                file.write(video_chunk_message.video_chunk)
+            cap = VideoCapture(message['path'])
+            frames = []
+
+            while True:
+                ret, frame = cap.read()
+
+                if ret:
+                    frames.append(frame)
+                else:
+                    break
+
+            step = round(len(frames)/self.sampling_rate)
+
+            for i in range(self.sampling_rate):
+                offset = i*step
+
+                frame_message = SampledFrameMessage(chunk_id=message.id,
+                                                    offset=offset,
+                                                    frame=image_to_bytes(frame[offset]))
+                
+                self.output_queue.put(message)
 
     def _stop(self):
         self.queue.put(None)
-

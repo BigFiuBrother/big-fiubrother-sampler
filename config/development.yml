@@ -3,3 +3,11 @@ consumer:
   queue: video_chunks
   username: fiubrother
   password: alwayswatching
+persitance:
+  db:
+    host: localhost
+    name: video_chunks
+    user: postgres
+    password: password
+sampling:
+  rate: 4
