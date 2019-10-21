@@ -1,8 +1,14 @@
 consumer:
   host: localhost
-  queue: video_chunks
   username: fiubrother
   password: alwayswatching
+  queue: video_chunks
+publisher:
+  host: localhost
+  username: fiubrother
+  password: alwayswatching
+  exchange: fiubrother
+  routing_key: sampled_frames
 persitance:
   db:
     host: localhost

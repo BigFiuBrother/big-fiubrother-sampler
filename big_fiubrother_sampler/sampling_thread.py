@@ -2,6 +2,7 @@ from big_fiubrother_core import StoppableThread
 from big_fiubrother_core.messages import SampledFrameMessage
 from big_fiubrother_core.image_processing_helper import image_to_bytes
 from cv2 import VideoCapture
+import os
 
 
 class SamplingThread(StoppableThread):
@@ -38,5 +39,7 @@ class SamplingThread(StoppableThread):
                 
                 self.output_queue.put(message)
 
+            os.remove(message['path'])
+
     def _stop(self):
-        self.queue.put(None)
+        self.input_queue.put(None)

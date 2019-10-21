@@ -35,4 +35,4 @@ class PersistanceThread(StoppableThread):
         return path.join(self.path, filename)
 
     def _stop(self):
-        self.queue.put(None)
+        self.input_queue.put(None)

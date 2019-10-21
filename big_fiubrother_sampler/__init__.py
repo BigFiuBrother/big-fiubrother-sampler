@@ -1,2 +1,4 @@
 from big_fiubrother_sampler.video_chunk_consumer import VideoChunkConsumer
 from big_fiubrother_sampler.sampling_thread import SamplingThread
+from big_fiubrother_sampler.persistance_thread import PersistanceThread
+from big_fiubrother_sampler.sampled_frame_message_publisher import SampledFrameMessagePublisher
