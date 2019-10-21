@@ -16,10 +16,9 @@ class PersistanceThread(StoppableThread):
         self.db = Database(configuration['db']) 
 
     def _execute(self):
-        encoded_message = self.input_queue.get()
+        message = self.input_queue.get()
 
-        if encoded_message is not None:
-            message = decode_message(encoded_message)
+        if message is not None:
             filepath = self._tmp_path(message)
 
             video_chunk = VideoChunk(camera_id=message.camera_id, timestamp=message.timestamp, payload=message.payload)

@@ -12,7 +12,7 @@ publisher:
 persitance:
   db:
     host: localhost
-    name: video_chunks
+    name: big_fiubrother
     user: postgres
     password: password
 sampling:

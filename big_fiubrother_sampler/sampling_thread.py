@@ -32,12 +32,11 @@ class SamplingThread(StoppableThread):
 
             for i in range(self.sampling_rate):
                 offset = i*step
-
-                frame_message = SampledFrameMessage(chunk_id=message.id,
+                frame_message = SampledFrameMessage(chunk_id=message['id'],
                                                     offset=offset,
-                                                    frame=image_to_bytes(frame[offset]))
+                                                    frame=image_to_bytes(frames[offset]))
                 
-                self.output_queue.put(message)
+                self.output_queue.put(frame_message)
 
             os.remove(message['path'])
 
