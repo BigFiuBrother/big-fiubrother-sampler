@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from big_fiubrother_core.messages import VideoChunkMessage
 from big_fiubrother_core.message_clients.rabbitmq import Publisher
 

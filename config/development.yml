@@ -9,11 +9,9 @@ publisher:
   password: alwayswatching
   exchange: fiubrother
   routing_key: sampled_frames
-persitance:
-  db:
-    host: localhost
-    name: big_fiubrother
-    user: postgres
-    password: password
-sampling:
-  rate: 4
+db:
+  host: localhost
+  name: big_fiubrother
+  user: postgres
+  password: password
+sampling_rate: 4
