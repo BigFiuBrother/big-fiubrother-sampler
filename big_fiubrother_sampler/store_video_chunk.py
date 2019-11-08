@@ -30,13 +30,9 @@ class StoreVideoChunk(QueueTask):
 
         id = self.db.add(video_chunk)
 
-        filepath = self.tmp_video_filepath(message)
+        filepath = path.join(self.path, video_chunk.filename)
 
         with open(filepath, 'wb') as file:
             file.write(message.payload)
 
         self.output_queue.put({'id': video_chunk.id, 'path': filepath})
-
-    def tmp_video_filepath(self, message):
-        filename = '{}_{}.h264'.format(message.camera_id, message.timestamp)
-        return path.join(self.path, filename)
