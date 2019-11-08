@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     publisher = StoppableThread(
         PublishToRabbitMQ(configuration=configuration['publisher'],
-                          output_queue=sampling_to_publisher_queue))
+                          input_queue=sampling_to_publisher_queue))
 
     signal_handler = SignalHandler(callback=consumer.stop)
 

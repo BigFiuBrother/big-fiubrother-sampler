@@ -14,7 +14,7 @@ class VideoChunkPublisher:
             buffer = file.read()
 
         message = VideoChunkMessage(camera_id='TEST_CAMERA',
-                                    timestamp='01-01-2000||00:00:00.0',
+                                    timestamp=0.0,
                                     payload=buffer)
 
         self.publisher.publish(message)
@@ -22,7 +22,8 @@ class VideoChunkPublisher:
         return message
 
 configuration = {
-  'host': '192.168.1.28',
+  # 'host': '192.168.1.28',
+  'host': 'localhost',
   'username': 'fiubrother',
   'password': 'alwayswatching',
   'exchange': 'fiubrother',
@@ -31,4 +32,4 @@ configuration = {
 
 publisher = VideoChunkPublisher(configuration)
 
-publisher.publish('tmp/CAMERA_1_05-10-2019||22:32:47.794347.h264')
+publisher.publish('../tmp/CAMERA_1_05-10-2019||22:32:47.794347.h264')

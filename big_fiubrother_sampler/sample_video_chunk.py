@@ -4,7 +4,7 @@ from big_fiubrother_core.db import (
     Frame
 )
 from big_fiubrother_core.messages import FrameMessage
-from big_fiubrother_core.image_processing_helper import image_to_bytes
+from big_fiubrother_core.utils import image_to_bytes
 from cv2 import VideoCapture
 import os
 
@@ -14,9 +14,10 @@ class SampleVideoChunk(QueueTask):
     def __init__(self, configuration, input_queue, output_queue):
         super().__init__(input_queue)
         self.output_queue = output_queue
-        self.sampling_rate = configuration['samplingrate']
+        self.configuration = configuration
 
     def init(self):
+        self.sampling_rate = self.configuration['sampling_rate']
         self.db = Database(self.configuration['db'])
 
     def execute_with(self, message):
