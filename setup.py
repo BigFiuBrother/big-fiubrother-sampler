@@ -5,7 +5,7 @@ with open("README.md", 'r') as f:
 
 setup(
    name='big-fiubrother-sampler',
-   version='0.1.0',
+   version='0.2.0',
    description='Big Fiubrother Sampler application',
    license="GPLv3",
    long_description=long_description,
