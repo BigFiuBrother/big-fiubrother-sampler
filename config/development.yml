@@ -11,7 +11,7 @@ publisher:
   routing_key: sampled_frames
 db:
   host: localhost
-  name: big_fiubrother
-  user: postgres
+  database: big_fiubrother
+  username: postgres
   password: password
 sampling_rate: 4
