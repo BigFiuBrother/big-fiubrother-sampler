@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", 'r') as f:
     long_description = f.read()
@@ -12,6 +12,6 @@ setup(
    long_description_content_type='text/markdown',
    author='Eduardo Neira, Gabriel Gayoso',
    author_email='aneira@fi.uba.ar',
-   packages=['big_fiubrother_camera'],
+   packages=find_packages(),
    url= 'https://github.com/BigFiuBrother/big-fiubrother-sampler'
 )
