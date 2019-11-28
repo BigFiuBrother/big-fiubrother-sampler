@@ -38,3 +38,6 @@ class StoreVideoChunk(QueueTask):
             file.write(message.payload)
 
         self.output_queue.put({'id': video_chunk.id, 'path': filepath})
+
+    def close(self):
+        self.db.close()
