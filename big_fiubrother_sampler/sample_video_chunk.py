@@ -1,7 +1,8 @@
 from big_fiubrother_core import QueueTask
 from big_fiubrother_core.db import (
     Database,
-    Frame
+    Frame,
+    VideoChunkProcess
 )
 from big_fiubrother_core.messages import FrameMessage
 from big_fiubrother_core.utils import image_to_bytes
@@ -31,6 +32,12 @@ class SampleVideoChunk(QueueTask):
                 frames.append(frame)
             else:
                 break
+
+        video_chunk_process = VideoChunkProcess(
+            video_chunk_id=message['id'],
+            total_frames_count=self.sampling_rate)
+
+        self.db.add(video_chunk_process)
 
         step = round(len(frames) / self.sampling_rate)
 
