@@ -46,11 +46,12 @@ class SampleVideoChunk(QueueTask):
 
             frame = Frame(offset=offset,
                           video_chunk_id=message['id'])
-            frame_id = self.db.add(frame)
+            self.db.add(frame)
 
             payload = image_to_bytes(frames[offset])
+
             frame_message = FrameMessage(video_chunk_id=message['id'],
-                                         frame_id=frame_id,
+                                         frame_id=frame.id,
                                          payload=payload)
 
             self.output_queue.put(frame_message)
