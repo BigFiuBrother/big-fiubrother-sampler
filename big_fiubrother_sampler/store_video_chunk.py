@@ -1,43 +1,39 @@
-from big_fiubrother_core import QueueTask
+from big_fiubrother_core import Task
 from big_fiubrother_core.db import (
     Database,
     VideoChunk
 )
+from big_fiubrother_core.storage import S3Storage
+from big_fiubrother_core.synchronization import ProcessSynchronizer
 from os import path
 
 
-class StoreVideoChunk(QueueTask):
+class StoreVideoChunk(Task):
 
-    TMP_PATH = 'tmp'
+    def __init__(self, configuration):
+        self.db = Database(configuration['db'])
+        self.storage = S3Storage(configuration['storage'])
+        self.process_synchronizer = ProcessSynchronizer(
+            configuration['synchronization'])
 
-    def __init__(self, configuration, input_queue, output_queue):
-        super().__init__(input_queue)
-        self.output_queue = output_queue
-        self.configuration = configuration
-
-    def init(self):
-        if 'tmp_path' in self.configuration:
-            self.path = self.configuration['tmp_path']
-        else:
-            self.path = self.TMP_PATH
-
-        self.db = Database(self.configuration['db'])
-
-    def execute_with(self, message):
+    def execute(self, message):        
         video_chunk = VideoChunk(camera_id=message.camera_id,
-                                 timestamp=message.timestamp,
-                                 payload=message.payload)
+                                 timestamp=message.timestamp)
 
-        id = self.db.add(video_chunk)
+        self.db.add(video_chunk)
 
-        filepath = path.join(
-            self.path, 
-            '{}.h264'.format(video_chunk.filename()))
+        filepath = path.join('tmp', '{}.h264'.format(video_chunk.id))
         
         with open(filepath, 'wb') as file:
             file.write(message.payload)
+        
+        self.storage.store_file(str(video_chunk.id), filepath)
 
-        self.output_queue.put({'id': video_chunk.id, 'path': filepath})
+        self.process_synchronizer.register_video_chunk(str(video_chunk.id))
+
+        return {'video_chunk_id': video_chunk.id, 'path': filepath}
 
     def close(self):
         self.db.close()
+        self.process_synchronizer.close()
+        

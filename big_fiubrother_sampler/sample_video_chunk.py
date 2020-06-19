@@ -1,30 +1,18 @@
-from big_fiubrother_core import QueueTask
-from big_fiubrother_core.db import (
-    Database,
-    Frame,
-    VideoChunkProcess
-)
-from big_fiubrother_core.messages import FrameMessage
 from big_fiubrother_core.utils import image_to_bytes
 from cv2 import VideoCapture
 import os
 
 
-class SampleVideoChunk(QueueTask):
+class SampleVideoChunk(Task):
 
-    def __init__(self, configuration, input_queue, output_queue):
-        super().__init__(input_queue)
-        self.output_queue = output_queue
-        self.configuration = configuration
+    def __init__(self, configuration):
+        self.sampling_rate = configuration['sampling_rate']
 
-    def init(self):
-        self.sampling_rate = self.configuration['sampling_rate']
-        self.db = Database(self.configuration['db'])
-
-    def execute_with(self, message):
+    def execute(self, message):
         cap = VideoCapture(message['path'])
-        frames = []
 
+        frames = []
+        
         while True:
             ret, frame = cap.read()
 
@@ -33,27 +21,17 @@ class SampleVideoChunk(QueueTask):
             else:
                 break
 
-        video_chunk_process = VideoChunkProcess(
-            video_chunk_id=message['id'],
-            total_frames_count=self.sampling_rate)
-
-        self.db.add(video_chunk_process)
+        os.remove(message['path'])
 
         step = round(len(frames) / self.sampling_rate)
 
+        messages = []
+        
         for i in range(self.sampling_rate):
-            offset = i * step
+            messages.append({
+                'offset': i * step,
+                'video_chunk_id': message['video_chunk_id'],
+                'payload': image_to_bytes(frames[offset])
+            })
 
-            frame = Frame(offset=offset,
-                          video_chunk_id=message['id'])
-            self.db.add(frame)
-
-            payload = image_to_bytes(frames[offset])
-
-            frame_message = FrameMessage(video_chunk_id=message['id'],
-                                         frame_id=frame.id,
-                                         payload=payload)
-
-            self.output_queue.put(frame_message)
-
-        os.remove(message['path'])
+        return messages

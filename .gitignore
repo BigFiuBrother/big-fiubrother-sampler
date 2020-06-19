@@ -4,3 +4,4 @@ big_fiubrother_sampler.egg-info/
 dist/
 build/
 tmp/
+log/
