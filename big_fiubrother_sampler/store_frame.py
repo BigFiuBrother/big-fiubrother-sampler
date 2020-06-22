@@ -1,4 +1,4 @@
-from big_fiubrother_core import Task
+from big_fiubrother_core.utils import Task
 from big_fiubrother_core.db import Database, Frame
 from big_fiubrother_core.messages import FrameMessage
 from big_fiubrother_core.synchronization import ProcessSynchronizer

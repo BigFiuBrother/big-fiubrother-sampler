@@ -1,4 +1,4 @@
-from big_fiubrother_core.utils import image_to_bytes
+from big_fiubrother_core.utils import Task, image_to_bytes
 from cv2 import VideoCapture
 import os
 

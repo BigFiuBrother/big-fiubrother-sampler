@@ -24,20 +24,17 @@ if __name__ == "__main__":
 
     program = Program([
         ThreadContainer(
-            configuration=configuration,
             task=StoreVideoChunk(configuration),
             input_interface=RabbitMQConsumer(configuration['consumer']),
             output_interface=queue_1),
         ThreadContainer(
-            configuration=configuration,
             task=SampleVideoChunk(configuration),
             input_interface=queue_1,
             output_interface=queue_2),
         ThreadContainer(
-            configuration=configuration,
             task=SampleVideoChunk(configuration),
             input_interface=queue_2,
-            output_interface=PublishToRabbitMQ(configuration['publisher']))
+            output_interface=RabbitMQPublisher(configuration['publisher']))
     ])
 
     print('[*] Configuration finished. Starting big-fiubrother-sampler!')
