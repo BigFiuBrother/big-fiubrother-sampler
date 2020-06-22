@@ -10,7 +10,6 @@ class StoreFrame(Task):
         self.db = Database(configuration['db'])
         self.process_synchronizer = ProcessSynchronizer(configuration['synchronization']) 
 
-
     def execute(self, message):
         frame = Frame(
             offset=message["offset"],
