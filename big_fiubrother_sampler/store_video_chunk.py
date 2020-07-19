@@ -1,14 +1,11 @@
 from big_fiubrother_core import QueueTask
-from big_fiubrother_core.db import (
-    Database,
-    VideoChunk
-)
+from big_fiubrother_core.db import Database, VideoChunk
+from big_fiubrother_core.storage import S3Client
+from big_fiubrother_core.synchronization import ProcessSynchronizer
 from os import path
 
 
 class StoreVideoChunk(QueueTask):
-
-    TMP_PATH = 'tmp'
 
     def __init__(self, configuration, input_queue, output_queue):
         super().__init__(input_queue)
@@ -16,28 +13,31 @@ class StoreVideoChunk(QueueTask):
         self.configuration = configuration
 
     def init(self):
-        if 'tmp_path' in self.configuration:
-            self.path = self.configuration['tmp_path']
-        else:
-            self.path = self.TMP_PATH
-
         self.db = Database(self.configuration['db'])
+        self.storage = S3Client(self.configuration['storage'])
+        self.process_synchronizer = ProcessSynchronizer(
+            self.configuration['synchronization'])
 
     def execute_with(self, message):
         video_chunk = VideoChunk(camera_id=message.camera_id,
-                                 timestamp=message.timestamp,
-                                 payload=message.payload)
+                                 timestamp=message.timestamp)
 
-        id = self.db.add(video_chunk)
+        self.db.add(video_chunk)
 
-        filepath = path.join(
-            self.path, 
-            '{}.h264'.format(video_chunk.filename()))
+        filepath = path.join('tmp', '{}.h264'.format(video_chunk.id))
+
+        self.storage.store_file(str(video_chunk.id), filepath)
+
+        self.process_synchronizer.register_video_chunk(str(video_chunk.id))
         
         with open(filepath, 'wb') as file:
             file.write(message.payload)
 
-        self.output_queue.put({'id': video_chunk.id, 'path': filepath})
+        self.output_queue.put({
+            'video_chunk_id': video_chunk.id,
+            'path': filepath
+        })
 
     def close(self):
         self.db.close()
+        self.process_synchronizer.close()

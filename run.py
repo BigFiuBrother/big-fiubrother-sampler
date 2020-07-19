@@ -2,15 +2,16 @@
 
 from queue import Queue
 from big_fiubrother_core import (
-    SignalHandler,
     StoppableThread,
     PublishToRabbitMQ,
     ConsumeFromRabbitMQ,
-    setup
+    setup,
+    run
 )
 from big_fiubrother_sampler import (
     StoreVideoChunk,
-    SampleVideoChunk
+    SampleVideoChunk,
+    StoreFrame
 )
 
 
@@ -19,44 +20,45 @@ if __name__ == "__main__":
 
     print('[*] Configuring big-fiubrother-sampler')
 
-    consumer_to_storing_queue = Queue()
-    storing_to_sampling_queue = Queue()
-    sampling_to_publisher_queue = Queue()
-
+    queue_1 = Queue()
+    
     consumer = StoppableThread(
         ConsumeFromRabbitMQ(configuration=configuration['consumer'],
-                            output_queue=consumer_to_storing_queue))
+                            output_queue=queue_1))
+
+    queue_2 = Queue()
 
     video_storer = StoppableThread(
         StoreVideoChunk(configuration=configuration,
-                        input_queue=consumer_to_storing_queue,
-                        output_queue=storing_to_sampling_queue))
+                        input_queue=queue_1,
+                        output_queue=queue_2))
+
+    queue_3 = Queue()
 
     video_sampler = StoppableThread(
         SampleVideoChunk(configuration=configuration,
-                         input_queue=storing_to_sampling_queue,
-                         output_queue=sampling_to_publisher_queue))
+                         input_queue=queue_2,
+                         output_queue=queue_3))
+
+    queue_4 = Queue()
+
+    frame_storer = StoppableThread(
+        StoreFrame(configuration=configuration,
+                        input_queue=queue_3,
+                        output_queue=queue_4))
 
     publisher = StoppableThread(
         PublishToRabbitMQ(configuration=configuration['publisher'],
-                          input_queue=sampling_to_publisher_queue))
-
-    signal_handler = SignalHandler(callback=consumer.stop)
+                          input_queue=queue_4))
 
     print('[*] Configuration finished. Starting big-fiubrother-sampler!')
 
-    publisher.start()
-    video_storer.start()
-    video_sampler.start()
-    consumer.run()
-
-    # Signal Handled STOP
-    video_storer.stop()
-    video_sampler.stop()
-    publisher.stop()
-
-    video_storer.wait()
-    video_sampler.wait()
-    publisher.wait()
+    run([
+        consumer,
+        video_storer,
+        video_sampler,
+        frame_storer,
+        publisher
+    ])
 
     print('[*] big-fiubrother-sampler stopped!')

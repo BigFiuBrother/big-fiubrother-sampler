@@ -14,4 +14,12 @@ db:
   database: big_fiubrother
   username: postgres
   password: password
+synchronization:
+  host: localhost
+  port: 2181
+storage:
+  host: localhost
+  access_key: fiubrother
+  secret_key: alwayswatching
+  bucket: raw_videos
 sampling_rate: 4
