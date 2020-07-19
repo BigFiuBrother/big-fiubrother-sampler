@@ -1,6 +1,6 @@
 from big_fiubrother_core import QueueTask
 from big_fiubrother_core.db import Database, VideoChunk
-from big_fiubrother_core.storage import S3Client
+from big_fiubrother_core.storage import raw_storage
 from big_fiubrother_core.synchronization import ProcessSynchronizer
 from os import path
 
@@ -14,7 +14,7 @@ class StoreVideoChunk(QueueTask):
 
     def init(self):
         self.db = Database(self.configuration['db'])
-        self.storage = S3Client(self.configuration['storage'])
+        self.storage = raw_storage(self.configuration['storage'])
         self.process_synchronizer = ProcessSynchronizer(
             self.configuration['synchronization'])
 
