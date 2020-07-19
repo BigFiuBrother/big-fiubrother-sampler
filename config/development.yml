@@ -12,8 +12,8 @@ publisher:
 db:
   host: localhost
   database: big_fiubrother
-  username: postgres
-  password: password
+  username: fiubrother
+  password: alwayswatching
 synchronization:
   host: localhost
   port: 2181
