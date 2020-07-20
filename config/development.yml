@@ -21,5 +21,4 @@ storage:
   host: localhost
   access_key: fiubrother
   secret_key: alwayswatching
-  bucket: raw_videos
 sampling_rate: 4
