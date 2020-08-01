@@ -28,11 +28,15 @@ class SampleVideoChunk(QueueTask):
 
         step = round(len(frames) / self.sampling_rate)
 
+        messages = []
+        
         for i in range(self.sampling_rate):
             offset = i * step
 
-            self.output_queue.put({
+            messages.append({
                 'offset': i * step,
                 'video_chunk_id': message['video_chunk_id'],
                 'payload': image_to_bytes(frames[offset])
             })        
+
+        self.output_queue.put(messages)

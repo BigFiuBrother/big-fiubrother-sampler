@@ -15,23 +15,27 @@ class StoreFrame(QueueTask):
         self.db = Database(self.configuration['db'])
         self.process_synchronizer = ProcessSynchronizer(self.configuration['synchronization']) 
 
-    def execute_with(self, message):
-        frame = Frame(
-            offset=message["offset"],
-            video_chunk_id=message['video_chunk_id'])
+    def execute_with(self, messages):
+        for message in messages:
+            frame = Frame(
+                offset=message["offset"],
+                video_chunk_id=message['video_chunk_id'])
 
-        self.db.add(frame)
+            self.db.add(frame)
 
-        self.process_synchronizer.register_frame_task(
-            str(message['video_chunk_id']),
-            str(frame.id))
+            message['frame_id'] = frame.id
 
-        self.output_queue.put(
-            FrameMessage(
-                video_chunk_id=message['video_chunk_id'],
-                frame_id=frame.id,
-                payload=message['payload'])
-        )
+            self.process_synchronizer.register_frame_task(
+                str(message['video_chunk_id']),
+                str(frame.id))
+
+        for message in messages:
+            self.output_queue.put(
+                FrameMessage(
+                    video_chunk_id=message['video_chunk_id'],
+                    frame_id=message['frame_id'],
+                    payload=message['payload'])
+            )
 
     def close(self):
         self.db.close()

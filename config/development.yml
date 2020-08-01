@@ -19,6 +19,7 @@ synchronization:
   port: 2181
 storage:
   host: localhost
+  port: 9000
   access_key: fiubrother
   secret_key: alwayswatching
 sampling_rate: 4

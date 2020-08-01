@@ -24,14 +24,14 @@ class StoreVideoChunk(QueueTask):
 
         self.db.add(video_chunk)
 
+        self.process_synchronizer.register_video_task(str(video_chunk.id))
+        
         filepath = path.join('tmp', '{}.h264'.format(video_chunk.id))
 
-        self.storage.store_file(str(video_chunk.id), filepath)
-
-        self.process_synchronizer.register_video_chunk(str(video_chunk.id))
-        
         with open(filepath, 'wb') as file:
             file.write(message.payload)
+
+        self.storage.store_file(str(video_chunk.id), filepath)
 
         self.output_queue.put({
             'video_chunk_id': video_chunk.id,
