@@ -3,6 +3,7 @@ from big_fiubrother_core.db import Database, VideoChunk
 from big_fiubrother_core.storage import raw_storage
 from big_fiubrother_core.synchronization import ProcessSynchronizer
 from os import path
+import logging
 
 
 class StoreVideoChunk(QueueTask):
@@ -23,6 +24,8 @@ class StoreVideoChunk(QueueTask):
                                  timestamp=message.timestamp)
 
         self.db.add(video_chunk)
+
+        logging.debug(f"{video_chunk.id} created in DB. Sampling starting!")
 
         self.process_synchronizer.register_video_task(str(video_chunk.id))
         
