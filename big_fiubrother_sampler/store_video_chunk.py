@@ -25,7 +25,7 @@ class StoreVideoChunk(QueueTask):
 
         self.db.add(video_chunk)
 
-        logging.debug(f"{video_chunk.id} created in DB. Sampling starting!")
+        logging.info(f"{video_chunk.id} created in DB. Sampling starting!")
 
         self.process_synchronizer.register_video_task(str(video_chunk.id))
         
