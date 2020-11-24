@@ -14,13 +14,12 @@ from big_fiubrother_sampler import (
     StoreFrame
 )
 
-
 if __name__ == "__main__":
     with runtime_context('Big Fiubrother Sampler Application') as configuration:
         print('[*] Configuring big-fiubrother-sampler')
 
         queue_1 = Queue()
-        
+
         consumer = StoppableThread(
             ConsumeFromRabbitMQ(configuration=configuration['consumer'],
                                 output_queue=queue_1))
@@ -43,8 +42,8 @@ if __name__ == "__main__":
 
         frame_storer = StoppableThread(
             StoreFrame(configuration=configuration,
-                            input_queue=queue_3,
-                            output_queue=queue_4))
+                       input_queue=queue_3,
+                       output_queue=queue_4))
 
         publisher = StoppableThread(
             PublishToRabbitMQ(configuration=configuration['publisher'],
