@@ -2,7 +2,7 @@ from big_fiubrother_core import QueueTask
 from os import path
 
 
-class StoreVideoChunk(QueueTask):
+class FetchVideoChunk(QueueTask):
 
     def __init__(self, configuration, input_queue, output_queue):
         super().__init__(input_queue)
