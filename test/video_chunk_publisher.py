@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from big_fiubrother_core.messages import VideoChunkMessage
+from big_fiubrother_core.messages import VideoChunkMessage, encode_message
 from big_fiubrother_core.message_clients.rabbitmq import Publisher
 
 
@@ -17,7 +17,7 @@ class VideoChunkPublisher:
                                     timestamp=0.0,
                                     payload=buffer)
 
-        self.publisher.publish(message)
+        self.publisher.publish(encode_message(message))
 
         return message
 
@@ -32,4 +32,4 @@ configuration = {
 
 publisher = VideoChunkPublisher(configuration)
 
-publisher.publish('../tmp/CAMERA_1_05-10-2019||22:32:47.794347.h264')
+publisher.publish('resources/test.h264')

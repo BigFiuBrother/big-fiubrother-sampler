@@ -18,7 +18,7 @@ class StoreVideoChunk(QueueTask):
         self.db = Database(self.configuration['db'])
         self.storage = video_chunks(self.configuration['storage'])
         self.process_synchronizer = ProcessSynchronizer(self.configuration['synchronization'])
-        self.web_server_url = self.configuration['web_server_host']
+        self.web_server_url = self.configuration['web_server_url']
 
     def execute_with(self, message):
         # Create video chunk and frames in database
@@ -48,7 +48,7 @@ class StoreVideoChunk(QueueTask):
             )
 
         # Upload chunk to S3
-        self.storage.store_file(video_chunk.id, message['filepath'])
+        self.storage.store_file(f"{video_chunk.id}.mp4", message['filepath'])
 
         # Notify to web server that new video chunk is ready
         try:

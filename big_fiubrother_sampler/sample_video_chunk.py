@@ -16,8 +16,7 @@ class SampleVideoChunk(QueueTask):
     def execute_with(self, message):
         video_capture = VideoCapture(message['filepath'])
 
-        filename = f"tmp/{message['camera_id']}_{message['timestamp']}.mp4"
-        writer = VideoBuilder(filename=filename,
+        writer = VideoBuilder(filename=f"tmp/{message['camera_id']}_{message['timestamp']}",
                               width=int(video_capture.get(3)),
                               height=int(video_capture.get(4)),
                               fps=self.fps)
@@ -38,7 +37,7 @@ class SampleVideoChunk(QueueTask):
 
         # Write video as mp4 to disk and add info to message
         writer.close()
-        message['filepath'] = filename
+        message['filepath'] = writer.filepath
         message['duration'] = writer.duration()
         message['frame_count'] = len(frames)
 

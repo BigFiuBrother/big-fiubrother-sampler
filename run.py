@@ -42,8 +42,8 @@ if __name__ == "__main__":
 
         video_storer = StoppableThread(
             StoreVideoChunk(configuration=configuration,
-                       input_queue=queue_3,
-                       output_queue=queue_4))
+                            input_queue=queue_3,
+                            output_queue=queue_4))
 
         publisher = StoppableThread(
             PublishToRabbitMQ(configuration=configuration['publisher'],
